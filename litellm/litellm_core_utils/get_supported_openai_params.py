@@ -132,6 +132,10 @@ def get_supported_openai_params(  # noqa: PLR0915
             )
         else:
             return litellm.AzureOpenAIConfig().get_supported_openai_params(model=model)
+    elif custom_llm_provider == "fabric":
+        from litellm.llms.fabric.chat.transformation import FabricConfig
+
+        return FabricConfig().get_supported_openai_params(model=model)
     elif custom_llm_provider == "openrouter":
         return litellm.OpenrouterConfig().get_supported_openai_params(model=model)
     elif custom_llm_provider == "vercel_ai_gateway":

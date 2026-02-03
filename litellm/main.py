@@ -299,6 +299,12 @@ oci_transformation = OCIChatConfig()
 ovhcloud_transformation = OVHCloudChatConfig()
 lemonade_transformation = LemonadeChatConfig()
 
+from litellm.llms.fabric.chat.handler import FabricChatCompletion
+from litellm.llms.fabric.embed.handler import FabricEmbeddingHandler
+
+fabric_chat_completions = FabricChatCompletion()
+fabric_embedding = FabricEmbeddingHandler()
+
 MOCK_RESPONSE_TYPE = Union[str, Exception, dict, ModelResponse, ModelResponseStream]
 ####### COMPLETION ENDPOINTS ################
 
@@ -2932,6 +2938,21 @@ def completion(  # type: ignore # noqa: PLR0915
                 custom_llm_provider=custom_llm_provider,
                 custom_prompt_dict=custom_prompt_dict,
             )
+        elif custom_llm_provider == "fabric":
+            response = fabric_chat_completions.completion(
+                model=model,
+                messages=messages,
+                api_base=api_base,
+                api_version=api_version,
+                model_response=model_response,
+                optional_params=optional_params,
+                litellm_params=litellm_params,
+                logging_obj=logging,
+                acompletion=acompletion,
+                timeout=timeout,
+                client=client,
+                headers=headers,
+            )
         elif custom_llm_provider == "huggingface":
             huggingface_key = (
                 api_key
@@ -4691,6 +4712,19 @@ def embedding(  # noqa: PLR0915
                 max_retries=max_retries,
                 headers=headers or extra_headers,
                 litellm_params=litellm_params_dict,
+            )
+        elif custom_llm_provider == "fabric":
+            response = fabric_embedding.embedding(
+                model=model,
+                input=input,
+                api_base=api_base,
+                api_version=api_version,
+                model_response=EmbeddingResponse(),
+                optional_params=optional_params,
+                logging_obj=logging,
+                aembedding=aembedding,
+                timeout=timeout,
+                client=client,
             )
         elif custom_llm_provider == "github_copilot":
             api_key = api_key or litellm.api_key

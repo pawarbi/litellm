@@ -7896,6 +7896,10 @@ class ProviderConfigManager:
             LlmProviders.HYPERBOLIC: (lambda: litellm.HyperbolicChatConfig(), False),
             LlmProviders.OVHCLOUD: (lambda: litellm.OVHCloudChatConfig(), False),
             LlmProviders.AMAZON_NOVA: (lambda: litellm.AmazonNovaChatConfig(), False),
+            LlmProviders.FABRIC: (
+                lambda model: ProviderConfigManager._get_fabric_config(model),
+                True,
+            ),
             LlmProviders.LANGGRAPH: (
                 lambda: ProviderConfigManager._get_langgraph_config(),
                 False,
@@ -7910,6 +7914,13 @@ class ProviderConfigManager:
         if litellm.AzureOpenAIGPT5Config.is_model_gpt_5_model(model=model):
             return litellm.AzureOpenAIGPT5Config()
         return litellm.AzureOpenAIConfig()
+
+    @staticmethod
+    def _get_fabric_config(model: str) -> BaseConfig:
+        """Get Fabric config based on model type."""
+        from litellm.llms.fabric.chat.transformation import FabricConfig
+
+        return FabricConfig()
 
     @staticmethod
     def _get_azure_ai_config(model: str) -> BaseConfig:

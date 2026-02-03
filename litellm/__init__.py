@@ -564,6 +564,7 @@ ovhcloud_embedding_models: Set = set()
 lemonade_models: Set = set()
 docker_model_runner_models: Set = set()
 amazon_nova_models: Set = set()
+fabric_models: Set = set()
 stability_models: Set = set()
 github_copilot_models: Set = set()
 chatgpt_models: Set = set()
@@ -818,6 +819,8 @@ def add_known_models():
             docker_model_runner_models.add(key)
         elif value.get("litellm_provider") == "amazon_nova":
             amazon_nova_models.add(key)
+        elif value.get("litellm_provider") == "fabric":
+            fabric_models.add(key)
         elif value.get("litellm_provider") == "stability":
             stability_models.add(key)
         elif value.get("litellm_provider") == "github_copilot":
@@ -939,6 +942,7 @@ model_list = list(
     | ovhcloud_models
     | lemonade_models
     | docker_model_runner_models
+    | fabric_models
     | set(clarifai_models)
 )
 
@@ -1035,6 +1039,7 @@ models_by_provider: dict = {
     "lemonade": lemonade_models,
     "clarifai": clarifai_models,
     "amazon_nova": amazon_nova_models,
+    "fabric": fabric_models,
     "stability": stability_models,
     "github_copilot": github_copilot_models,
     "chatgpt": chatgpt_models,
