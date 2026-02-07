@@ -165,6 +165,12 @@ def get_llm_provider(  # noqa: PLR0915
                 dynamic_api_key=dynamic_api_key,
             )
 
+        # Fabric provider has custom handler - don't route to openai_compatible
+        if model.startswith("fabric/"):
+            custom_llm_provider = "fabric"
+            model = model.split("/", 1)[1]
+            return model, custom_llm_provider, dynamic_api_key, api_base
+
         # check if llm provider part of model name
 
         if (
@@ -439,8 +445,6 @@ def get_llm_provider(  # noqa: PLR0915
             custom_llm_provider = "amazon_nova"
         elif model.startswith("sap/"):
             custom_llm_provider = "sap"
-        elif model.startswith("fabric/"):
-            custom_llm_provider = "fabric"
         if not custom_llm_provider:
             if litellm.suppress_debug_info is False:
                 print()  # noqa
